@@ -10,6 +10,9 @@ responseDict = {}
 with open("responseDict.pkl","rb") as file:
   responseDict = pickle.load(file)
 
+if userName == "reformat":
+  methods.reformat(responseDict)
+
 if userName == "trainer":
   lastTrainingMessage = ""
   
