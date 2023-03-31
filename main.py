@@ -11,6 +11,8 @@ with open("responseDict.pkl","rb") as file:
   responseDict = pickle.load(file)
 
 if userName == "reformat":
+  #IF WE WANT TO ACTUALLY REFORMAT, THEN SET DICT EQUAL TO THIS
+  #dont do that until we have it setup to add to it properly in all cases
   methods.reformat(responseDict)
 
 if userName == "trainer":
