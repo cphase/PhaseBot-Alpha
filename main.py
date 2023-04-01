@@ -2,6 +2,8 @@ import methods
 import pickle
 import random
 
+#TODO: difference measure
+
 aiName = "PhaseBot"
 userName = input("Enter your name: ")
 
@@ -9,7 +11,6 @@ responseDict = {}
 
 with open("responseDict.pkl","rb") as file:
   responseDict = pickle.load(file)
-
 
 if userName == "reformat":
   responseDict = methods.reformat(responseDict)
@@ -35,7 +36,6 @@ if userName == "trainer":
       responseDict[formatLastTrainerInput] = responseList
     lastTrainerInput = trainerInput
     trainerInput = input("Trainer: ")
-    
 
 message = input(aiName + ": " + "Hey, what's up?\n" + userName + ": ")
 lastUserMessage = ""
@@ -63,9 +63,6 @@ while message != "-1":
     lastAiResponse = currentResponse
     
   else:
-    #TODO: figure out how to find a similar message. Maybe get the words, or the keyword and find the closest dictionary key. ignore caps (punctuation already ignored if I use the getwords from journal).
-    #maybe will let us add more responses to other keys if keys are similar enough... but don't want it to start saying anything irrelevant.
-    
     #build our prompt
     cantRespondMessage = aiName
     cantRespondMessage += ": Sorry, idk how to respond to that. Please respond for me!\n"
