@@ -10,10 +10,9 @@ responseDict = {}
 with open("responseDict.pkl","rb") as file:
   responseDict = pickle.load(file)
 
+
 if userName == "reformat":
-  #IF WE WANT TO ACTUALLY REFORMAT, THEN SET DICT EQUAL TO THIS
-  #dont do that until we have it setup to add to it properly in all cases
-  methods.reformat(responseDict)
+  responseDict = methods.reformat(responseDict)
 
 if userName == "trainer":
   lastTrainerInput = ""
@@ -23,8 +22,8 @@ if userName == "trainer":
   
   while trainerInput != "-1":
     #make formatted versions of input to use as keys
-    formatTrainerInput = methods.getWords(trainerInput)
-    formatLastTrainerInput = methods.getWords(lastTrainerInput)
+    formatTrainerInput = ' '.join(methods.getWords(trainerInput))
+    formatLastTrainerInput = ' '.join(methods.getWords(lastTrainerInput))
 
     #check if we've seen this message before
     if formatLastTrainerInput in responseDict:
@@ -44,9 +43,9 @@ lastAiMessage = "Hey, what's up?"
 
 while message != "-1":
   #format messages
-  formatMessage = methods.getWords(message)
-  formatLastUserMessage = methods.getWords(lastUserMessage)
-  formatLastAiMessage = methods.getWords(lastAiMessage)
+  formatMessage = ' '.join(methods.getWords(message))
+  formatLastUserMessage = ' '.join(methods.getWords(lastUserMessage))
+  formatLastAiMessage = ' '.join(methods.getWords(lastAiMessage))
   
   #check if we've seen the message before
   if formatMessage in responseDict:
@@ -56,7 +55,7 @@ while message != "-1":
     #check if we've seen the last AI response before as a message
     if formatLastAiMessage in responseDict:
       #check if we already have this response
-      if not message in responseDict[lastAiMessage]:
+      if not message in responseDict[formatLastAiMessage]:
         responseDict[formatLastAiMessage].append(message)
     else:
       responseList = [lastAiMessage]
