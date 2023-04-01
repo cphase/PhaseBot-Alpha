@@ -50,7 +50,7 @@ while message != "-1":
   #check if we've seen the message before
   if formatMessage in responseDict:
     #respond with a random message from the response list
-    currentResponse = responseDict[formatMessage][random.randint(0, len(responseDict[message]) - 1)]
+    currentResponse = responseDict[formatMessage][random.randint(0, len(responseDict[formatMessage]) - 1)]
     print(aiName + ": " + currentResponse)
     #check if we've seen the last AI response before as a message
     if formatLastAiMessage in responseDict:
@@ -76,7 +76,6 @@ while message != "-1":
     responseDict[formatMessage] = responseList
 
   #get response
-  
   lastUserMessage = message
   message = input(userName + ": ")
 
