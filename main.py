@@ -22,9 +22,13 @@ if userName == "trainer":
   trainerInput = input("Trainer: ")
   
   while trainerInput != "-1":
+    #make formatted versions of input to use as keys
     formatTrainerInput = methods.getWords(trainerInput)
     formatLastTrainerInput = methods.getWords(lastTrainerInput)
+
+    #check if we've seen this message before
     if formatLastTrainerInput in responseDict:
+      #check if this response is already in list
       if not trainerInput in responseDict[formatLastTrainerInput]:
         responseDict[formatLastTrainerInput].append(trainerInput)
     else:
@@ -39,30 +43,38 @@ lastUserMessage = ""
 lastAiMessage = "Hey, what's up?"
 
 while message != "-1":
-  #respond
-  if message in responseDict:
-    currentResponse = responseDict[message][random.randint(0, len(responseDict[message]) - 1)]
+  #format messages
+  formatMessage = methods.getWords(message)
+  formatLastUserMessage = methods.getWords(lastUserMessage)
+  formatLastAiMessage = methods.getWords(lastAiMessage)
+  
+  #check if we've seen the message before
+  if formatMessage in responseDict:
+    #respond with a random message from the response list
+    currentResponse = responseDict[formatMessage][random.randint(0, len(responseDict[message]) - 1)]
     print(aiName + ": " + currentResponse)
-    if lastAiMessage in responseDict:
+    #check if we've seen the last AI response before as a message
+    if formatLastAiMessage in responseDict:
+      #check if we already have this response
       if not message in responseDict[lastAiMessage]:
-        responseDict[lastAiMessage].append(message)
+        responseDict[formatLastAiMessage].append(message)
     else:
       responseList = [lastAiMessage]
-      responseDict[lastAiMessage] = message
+      responseDict[formatLastAiMessage] = message
     lastAiResponse = currentResponse
     
   else:
-    #TODO: figure out how to find a similar message. Maybe get the words, or the keyword and find the closest dictionary key. ignore caps (punctuation already ignored if I use the getwords from journal)
-    #start saving keys without punctuation and caps. might have to write a program to process the responseDict that way...
-    #will have to process them that way every time we save the key to responseDict or look one up
+    #TODO: figure out how to find a similar message. Maybe get the words, or the keyword and find the closest dictionary key. ignore caps (punctuation already ignored if I use the getwords from journal).
     #maybe will let us add more responses to other keys if keys are similar enough... but don't want it to start saying anything irrelevant.
+    
+    #build our prompt
     cantRespondMessage = aiName
     cantRespondMessage += ": Sorry, idk how to respond to that. Please respond for me!\n"
     cantRespondMessage += aiName + ": "
     
     response = input(cantRespondMessage)
     responseList = [response]
-    responseDict[message] = responseList
+    responseDict[formatMessage] = responseList
 
   #get response
   
