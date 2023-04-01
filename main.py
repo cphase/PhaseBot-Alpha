@@ -3,6 +3,7 @@ import pickle
 import random
 
 #TODO: difference measure
+#      remove function
 
 aiName = "PhaseBot"
 userName = input("Enter your name: ")
