@@ -16,19 +16,21 @@ if userName == "reformat":
   methods.reformat(responseDict)
 
 if userName == "trainer":
-  lastTrainingMessage = ""
+  lastTrainerInput = ""
   
   print("Begin Training.")
   trainerInput = input("Trainer: ")
   
   while trainerInput != "-1":
-    if lastTrainingMessage in responseDict:
-      if not trainerInput in responseDict[lastTrainingMessage]:
-        responseDict[lastTrainingMessage].append(trainerInput)
+    formatTrainerInput = methods.getWords(trainerInput)
+    formatLastTrainerInput = methods.getWords(lastTrainerInput)
+    if formatLastTrainerInput in responseDict:
+      if not trainerInput in responseDict[formatLastTrainerInput]:
+        responseDict[formatLastTrainerInput].append(trainerInput)
     else:
       responseList = [trainerInput]
-      responseDict[lastTrainingMessage] = responseList
-    lastTrainingMessage = trainerInput
+      responseDict[formatLastTrainerInput] = responseList
+    lastTrainerInput = trainerInput
     trainerInput = input("Trainer: ")
     
 
