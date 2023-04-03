@@ -37,5 +37,15 @@ def reformat(dict):
     newDict[keyDict[keyList[i]]] = valueList[i]
 
   return newDict
-  
-  
+
+#checks what % of words in s1 are in s2
+def similarity(s1, s2):
+  l1 = getWords(s1)
+  l2 = getWords(s2)
+  same = 0
+  for word in l1:
+    if word in l2:
+      same += 1
+
+  return same / len(l1)
+      

@@ -13,6 +13,16 @@ responseDict = {}
 with open("responseDict.pkl","rb") as file:
   responseDict = pickle.load(file)
 
+if userName == "removeResponse":
+  responseToRemove = input("What response would you like to remove?: ")
+  removedKey = None
+  for key in responseDict.keys():
+    if responseToRemove in responseDict[key]:
+      responseDict[key].remove(responseToRemove)
+      removedKey = key
+  if len(responseDict[removedKey]) == 0:
+        responseDict.pop(removedKey)
+
 if userName == "reformat":
   responseDict = methods.reformat(responseDict)
 
@@ -51,7 +61,8 @@ while message != "-1":
   #check if we've seen the message before
   if formatMessage in responseDict:
     #respond with a random message from the response list
-    currentResponse = responseDict[formatMessage][random.randint(0, len(responseDict[formatMessage]) - 1)]
+    randomIndex = random.randint(0, len(responseDict[formatMessage]) - 1)
+    currentResponse = responseDict[formatMessage][randomIndex]
     print(aiName + ": " + currentResponse)
     #check if we've seen the last AI response before as a message
     if formatLastAiMessage in responseDict:
@@ -62,9 +73,13 @@ while message != "-1":
       responseList = [lastAiMessage]
       responseDict[formatLastAiMessage] = message
     lastAiResponse = currentResponse
-    
+
+  #if we haven't seen this message before
   else:
     #build our prompt
+    for key in responseDict.keys():
+      print(key)
+      print(methods.similarity(message, key))
     cantRespondMessage = aiName
     cantRespondMessage += ": Sorry, idk how to respond to that. Please respond for me!\n"
     cantRespondMessage += aiName + ": "
