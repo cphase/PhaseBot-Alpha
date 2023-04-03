@@ -78,6 +78,8 @@ while message != "-1":
   else:
     #build our prompt
     for key in responseDict.keys():
+      #TODO: make a list of keys above a certain threshold.
+      #then compare them in the other order and use the highest one for a repsonse
       print(key)
       print(methods.similarity(message, key))
     cantRespondMessage = aiName
