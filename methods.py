@@ -40,6 +40,8 @@ def reformat(dict):
 
 #checks what % of words in s1 are in s2
 def similarity(s1, s2):
+  if s1 == "":
+    return 0
   l1 = getWords(s1)
   l2 = getWords(s2)
   same = 0
@@ -48,4 +50,20 @@ def similarity(s1, s2):
       same += 1
 
   return same / len(l1)
-      
+
+def fixStrings(dict):
+  newDict = {}
+  for key in dict.keys():
+    if type(dict[key]) is str:
+      tempList = [dict[key]]
+      newDict[key] = tempList
+    elif isinstance(dict[key], list):
+      newDict[key] = dict[key]
+
+  return newDict
+
+def printDict(dict):
+  for key in dict.keys():
+    print(key)
+    print(dict[key])
+    print()

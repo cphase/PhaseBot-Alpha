@@ -3,15 +3,31 @@ import pickle
 import random
 
 #TODO: difference measure
-#      remove function
 
 aiName = "PhaseBot"
 userName = input("Enter your name: ")
 
 responseDict = {}
+threshold = 0.751
 
 with open("responseDict.pkl","rb") as file:
   responseDict = pickle.load(file)
+
+#PRINT THE DICTIONARY FOR TESTING
+printDict = False
+
+if printDict:
+  print("DICTIONARY FROM FILE: ")
+  print("-------------------------------")
+  methods.printDict(responseDict)
+  print("-------------------------------")
+
+
+dictChanged = False
+
+if userName == "fixStrings":
+  responseDict = methods.fixStrings(responseDict)
+  dictChanged = True;
 
 if userName == "removeResponse":
   responseToRemove = input("What response would you like to remove?: ")
@@ -22,9 +38,11 @@ if userName == "removeResponse":
       removedKey = key
   if len(responseDict[removedKey]) == 0:
         responseDict.pop(removedKey)
+  dictChanged = True;
 
 if userName == "reformat":
   responseDict = methods.reformat(responseDict)
+  dictChanged = True;
 
 if userName == "trainer":
   lastTrainerInput = ""
@@ -47,15 +65,20 @@ if userName == "trainer":
       responseDict[formatLastTrainerInput] = responseList
     lastTrainerInput = trainerInput
     trainerInput = input("Trainer: ")
+  dictChanged = True;
+
+if dictChanged and printDict:
+  print("DICTIONARY AFTER CHANGES: ")
+  print("-------------------------------")
+  methods.printDict(responseDict)
+  print("-------------------------------")
 
 message = input(aiName + ": " + "Hey, what's up?\n" + userName + ": ")
-lastUserMessage = ""
 lastAiMessage = "Hey, what's up?"
 
 while message != "-1":
   #format messages
   formatMessage = ' '.join(methods.getWords(message))
-  formatLastUserMessage = ' '.join(methods.getWords(lastUserMessage))
   formatLastAiMessage = ' '.join(methods.getWords(lastAiMessage))
   
   #check if we've seen the message before
@@ -70,29 +93,76 @@ while message != "-1":
       if not message in responseDict[formatLastAiMessage]:
         responseDict[formatLastAiMessage].append(message)
     else:
-      responseList = [lastAiMessage]
-      responseDict[formatLastAiMessage] = message
-    lastAiResponse = currentResponse
+      responseList = [message]
+      responseDict[formatLastAiMessage] = responseList
+    lastAiMessage = currentResponse
 
   #if we haven't seen this message before
   else:
     #build our prompt
+    similarMessages = []
+    reverseSimilarity = []
+    foundSimilar = False
     for key in responseDict.keys():
-      #TODO: make a list of keys above a certain threshold.
-      #then compare them in the other order and use the highest one for a repsonse
-      print(key)
-      print(methods.similarity(message, key))
-    cantRespondMessage = aiName
-    cantRespondMessage += ": Sorry, idk how to respond to that. Please respond for me!\n"
-    cantRespondMessage += aiName + ": "
+      sF = methods.similarity(formatMessage, key)
+      sR = methods.similarity(key, formatMessage)
+      if (sF >= threshold and sR >= threshold):
+        foundSimilar = True
+        similarMessages.append(key)
+        reverseSimilarity.append(sR)
+        
+    if foundSimilar:
+      #use the closest key if there are multiple that meet the threshold.
+      responseIndex = 0;
+      for i in range(1, len(similarMessages)):
+        if (reverseSimilarity[i] > reverseSimilarity[responseIndex]):
+          responseIndex = i
+      newKey = similarMessages[responseIndex]
+      #now create the response as if we had that key
+
+       #respond with a random message from the response list
+      randomIndex = random.randint(0, len(responseDict[newKey]) - 1)
+      currentResponse = responseDict[newKey][randomIndex]
+      print(aiName + ": " + currentResponse)
+      print("\t(USED SIMILAR KEY)")
+      #check if we've seen the last AI response before as a message
+      if formatLastAiMessage in responseDict:
+        #check if we already have this response
+        if not message in responseDict[formatLastAiMessage]:
+          responseDict[formatLastAiMessage].append(message)
+      else:
+        responseList = [lastAiMessage]
+        responseDict[formatLastAiMessage] = message
+      lastAiMessage = currentResponse
+
+    else:
+      cantRespondMessage = aiName
+      cantRespondMessage += ": Sorry, idk how to respond to that. Please respond for me!\n"
+      cantRespondMessage += aiName + ": "
     
-    response = input(cantRespondMessage)
-    responseList = [response]
-    responseDict[formatMessage] = responseList
+      response = input(cantRespondMessage)
+      responseList = [response]
+      responseDict[formatMessage] = responseList
+      lastAiMessage = response
 
   #get response
-  lastUserMessage = message
   message = input(userName + ": ")
+
+numKeys = 0
+numResponses = 0
+for key in responseDict.keys():
+  numKeys += 1
+  for response in responseDict[key]:
+    numResponses += 1
+
+print()
+print("***********")
+print("{} Keys.".format(numKeys))
+print("{} Responses.".format(numResponses))
+print("Saving...")
 
 with open("responseDict.pkl","wb") as file:
   pickle.dump(responseDict, file)
+  print("Saved!")
+  
+print("***********")
