@@ -87,6 +87,7 @@ while message != "-1":
     randomIndex = random.randint(0, len(responseDict[formatMessage]) - 1)
     currentResponse = responseDict[formatMessage][randomIndex]
     print(aiName + ": " + currentResponse)
+    #save the last interaction
     #check if we've seen the last AI response before as a message
     if formatLastAiMessage in responseDict:
       #check if we already have this response
@@ -99,7 +100,7 @@ while message != "-1":
 
   #if we haven't seen this message before
   else:
-    #build our prompt
+    #check if there is a similar enough message to use the responses of
     similarMessages = []
     reverseSimilarity = []
     foundSimilar = False
@@ -125,6 +126,8 @@ while message != "-1":
       currentResponse = responseDict[newKey][randomIndex]
       print(aiName + ": " + currentResponse)
       print("\t(USED SIMILAR KEY)")
+      
+      #save the last interaction
       #check if we've seen the last AI response before as a message
       if formatLastAiMessage in responseDict:
         #check if we already have this response
@@ -136,10 +139,11 @@ while message != "-1":
       lastAiMessage = currentResponse
 
     else:
+      #build the prompt
       cantRespondMessage = aiName
       cantRespondMessage += ": Sorry, idk how to respond to that. Please respond for me!\n"
       cantRespondMessage += aiName + ": "
-    
+      
       response = input(cantRespondMessage)
       responseList = [response]
       responseDict[formatMessage] = responseList
@@ -148,6 +152,7 @@ while message != "-1":
   #get response
   message = input(userName + ": ")
 
+#get some stats
 numKeys = 0
 numResponses = 0
 for key in responseDict.keys():
@@ -161,6 +166,7 @@ print("{} Keys.".format(numKeys))
 print("{} Responses.".format(numResponses))
 print("Saving...")
 
+#save the dict
 with open("responseDict.pkl","wb") as file:
   pickle.dump(responseDict, file)
   print("Saved!")

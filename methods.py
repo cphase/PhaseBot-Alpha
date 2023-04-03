@@ -23,8 +23,6 @@ def reformat(dict):
   newDict = {}
   valueList = list(dict.values())
   #a list of lists of responses
-  #print(valueList)
-  #print(dict)
   keyList = list(dict.keys())
   #print(keyList)
   keyDict = {}
@@ -51,6 +49,7 @@ def similarity(s1, s2):
 
   return same / len(l1)
 
+#fixes if the value is a string instead of a list of strings
 def fixStrings(dict):
   newDict = {}
   for key in dict.keys():
@@ -62,6 +61,7 @@ def fixStrings(dict):
 
   return newDict
 
+#prints the dictionary in a more readable format
 def printDict(dict):
   for key in dict.keys():
     print(key)
