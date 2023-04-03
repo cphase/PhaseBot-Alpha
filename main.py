@@ -2,12 +2,12 @@ import methods
 import pickle
 import random
 
-#TODO: difference measure
-
 aiName = "PhaseBot"
 userName = input("Enter your name: ")
 
 responseDict = {}
+
+#threshold for similar messages
 threshold = 0.751
 
 with open("responseDict.pkl","rb") as file:
